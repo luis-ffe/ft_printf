@@ -6,7 +6,7 @@
 /*   By: luis-ffe <luis-ffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 08:38:33 by luis-ffe          #+#    #+#             */
-/*   Updated: 2023/10/11 15:08:53 by luis-ffe         ###   ########.fr       */
+/*   Updated: 2023/10/11 15:40:12 by luis-ffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,35 +140,28 @@ int	ft_putstr_fd(char *s, int fd)
 	return (i);
 }
 
-int	ft_putnbr_fd(int n, int fd)
+int	ft_putnbr_fd(long long n, int fd)
 {
-	long    num;
-	long	ret;
+	long long    num;
 	int     x;
 	
 	x = 0;
 	num = n;
-	ret = num;
 	if (num < 0)
 	{
 			num *= -1;
-			ret = num;
 			x += write (fd, "-", 1);
 	}
 	else if (num < 10)
 	{
 		num += '0';
-		return(x + write (fd, &num, 1));
+		x += write (fd, &num, 1);
+		return (x);
 	}
-	else
+	else if(num >= 10)
 	{
-		ft_putnbr_fd(num / 10, fd);
+		x += ft_putnbr_fd(num / 10, fd);
 		ft_putnbr_fd(num % 10, fd);
-	}
-	while(ret)
-	{
-		ret /= 10;
-		x++;
 	}
 	return (x);
 }
@@ -208,10 +201,8 @@ int	ft_typefinder(int type, va_list lst)
 		return (ft_putstr_fd(va_arg(lst, char *), 1));
 	else if('p' == type)
 		return (ft_putptr0x(va_arg(lst, unsigned long long), 1));
-	else if('d' == type)
+	else if('d' == type || 'i' == type)
 		return (ft_putnbr_fd(va_arg(lst, int), 1));
-	else if('i' == type)
-		return (ft_putnbr_fd(va_arg(lst, int), 1)); 
 	else if('u' == type)
 		return (ft_putnbr_fd(va_arg(lst, unsigned int), 1));
 	else if('x' == type)
@@ -943,5 +934,15 @@ int main(void)
 	ft_printf("OUTPUT FT = %d\n", output_FT);
 
 	ft_printf("\n");
+
+
+		ft_printf("\n");
+
+	nbr_neg = -99999999;
+	output_OG = printf("OG -> %d\n", nbr_neg);
+	output_FT = ft_printf("FT -> %d\n", nbr_neg);
+	printf("OUTPUT OG = %d\n", output_OG);
+	ft_printf("OUTPUT FT = %d\n", output_FT);
+
 	return (0);
 }
