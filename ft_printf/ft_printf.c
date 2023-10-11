@@ -6,7 +6,7 @@
 /*   By: luis-ffe <luis-ffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 08:38:33 by luis-ffe          #+#    #+#             */
-/*   Updated: 2023/10/10 19:41:47 by luis-ffe         ###   ########.fr       */
+/*   Updated: 2023/10/11 15:08:53 by luis-ffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,24 @@ int	ft_puthex(unsigned int nbr)
 int	ft_putptr(unsigned long long num, int fd)
 {
 	int     x;
+	unsigned long long l;
 
+	x = 0;
+	l = num;
 	if (num < 17)
 	{
-		return(write(fd, &"0123456789abcdef"[num], 1));
+		write(fd, &"0123456789abcdef"[num], 1);
+		return (0);
 	}
 	else
 	{
-		x = ft_putptr(num / 16, fd);
+		ft_putptr(num / 16, fd);
 		ft_putptr(num % 16, fd);
+	}
+	while (l)
+	{
+		l /= 17;
+		x++;
 	}
 	return (x);
 }
@@ -104,12 +113,14 @@ int	ft_putptr0x(unsigned long long num, int fd)
 	int i;
 
 	i = 0;
-	if (num)
+	if (!num)
+		return(write(fd, "(nil)", 5));
+	else
 	{
-		i += write(fd, "0", 1);
-		i += write(fd, "x", 1);
+		write(fd, "0", 1);
+		write(fd, "x", 1);
 	}
-	return(i + ft_putptr(num, fd));
+	return(ft_putptr(num, fd) + 2);
 }
 
 int	ft_putchar_fd(char c, int fd)
@@ -123,32 +134,41 @@ int	ft_putstr_fd(char *s, int fd)
 
 	i = 0;
 	if (!s)
-		return (i);
+		return (write (1, "(null)", 6));
 	while (s[i])
 		write (fd, &s[i++], 1);
-	return (i - 1);
+	return (i);
 }
 
 int	ft_putnbr_fd(int n, int fd)
 {
 	long    num;
+	long	ret;
 	int     x;
-	num = n;
+	
 	x = 0;
+	num = n;
+	ret = num;
 	if (num < 0)
 	{
 			num *= -1;
-			x += write(fd, "-", 1);
+			ret = num;
+			x += write (fd, "-", 1);
 	}
-	if (num < 10)
+	else if (num < 10)
 	{
 		num += '0';
-		x += ft_putchar_fd(num, fd);
+		return(x + write (fd, &num, 1));
 	}
 	else
 	{
-		x += ft_putnbr_fd(num / 10, fd);
+		ft_putnbr_fd(num / 10, fd);
 		ft_putnbr_fd(num % 10, fd);
+	}
+	while(ret)
+	{
+		ret /= 10;
+		x++;
 	}
 	return (x);
 }
@@ -156,27 +176,32 @@ int	ft_putnbr_fd(int n, int fd)
 int	ft_puthex(unsigned int num, int fd, int j)
 {
 	int     x;
+	unsigned int n;
 
+	x = 0;
+	n = num;
 	if (num < 17)
 	{
 		if(j == 1)
-			return(write(fd, &"0123456789abcdef"[num], 1));
+			write(fd, &"0123456789abcdef"[num], 1);
 		else
-			return(write(fd, &"0123456789ABCDEF"[num], 1));
+			write(fd, &"0123456789ABCDEF"[num], 1);
 	}
 	else
 	{
-		x = ft_puthex(num / 16, fd, j);
+		ft_puthex(num / 16, fd, j);
 		ft_puthex(num % 16, fd, j);
+	}
+	while(n)
+	{
+		n /= 10;
+		x++;
 	}
 	return (x);
 }
 
 int	ft_typefinder(int type, va_list lst)
 {
-	int x;
-
-	x = 0;
 	if('c' == type)
 		return (ft_putchar_fd(va_arg(lst, int), 1));
 	else if('s' == type)
@@ -209,14 +234,15 @@ int	ft_printf(const char *input, ...)
 	{
 		if (*input == '%')
 		{
-			while (*input == '%')
+			input++;
+			if (*input != '%' && *input)
 			{
-				input++;
 				i += ft_typefinder(*input, list);
 			}
+			else
+				i += ft_putchar_fd(*input, 1);
 		}
 		else
-
 			i += ft_putchar_fd(*input, 1);
 		input++;
 	}
@@ -224,6 +250,7 @@ int	ft_printf(const char *input, ...)
 	return (i);
 }
 
+/*
 int	main(void)
 {
 	   printf("oi                  ok\n");
@@ -266,9 +293,11 @@ int	main(void)
 	
 	return 1;
 }
+*/
 
 
-/* MAIN TESTE LAZARO
+//MAIN TESTE LAZARO
+
 int main(void)
 {
 	int output_OG;
@@ -916,4 +945,3 @@ int main(void)
 	ft_printf("\n");
 	return (0);
 }
-*/
