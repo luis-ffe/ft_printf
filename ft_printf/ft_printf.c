@@ -6,7 +6,7 @@
 /*   By: luis-ffe <luis-ffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 08:38:33 by luis-ffe          #+#    #+#             */
-/*   Updated: 2023/10/11 15:40:12 by luis-ffe         ###   ########.fr       */
+/*   Updated: 2023/10/11 20:54:39 by luis-ffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,58 @@ int	ft_puthex(unsigned int nbr)
 }
 */
 
+static long int	countnbr(int c)
+{
+	int	size;
+
+	size = 0;
+	if (c <= 0)
+		size = 1;
+	while (c)
+	{
+		c = c / 10;
+		size++;
+	}
+	return (size);
+}
+
+static char	*set_nbr_str(unsigned int aux, char *s, long int size)
+{
+	while (aux > 0)
+	{
+		s[size--] = (aux % 10) + '0';
+		aux = aux / 10;
+	}
+	return (s);
+}
+
+char	*ft_itoa(int n)
+{
+	char			*s;
+	long int		size;
+	unsigned int	aux;
+
+	size = countnbr(n);
+	s = (char *)malloc(sizeof(char) * (size + 1));
+	if (!s)
+		return (NULL);
+	s[size--] = '\0';
+	if (n == 0)
+		s[0] = '0';
+	if (n < 0)
+	{
+		aux = n * -1;
+		s[0] = '-';
+	}
+	else
+		aux = n;
+	s = set_nbr_str(aux, s, size);
+	return (s);
+}
+
+
+//use atoi??
+
 int	ft_putptr(unsigned long long num, int fd)
 {
 	int     x;
@@ -90,20 +142,14 @@ int	ft_putptr(unsigned long long num, int fd)
 
 	x = 0;
 	l = num;
-	if (num < 17)
+	if (num < 16)
 	{
-		write(fd, &"0123456789abcdef"[num], 1);
-		return (0);
+		return(write(fd, &"0123456789abcdef"[num], 1));
 	}
 	else
 	{
-		ft_putptr(num / 16, fd);
+		x += ft_putptr(num / 16, fd);
 		ft_putptr(num % 16, fd);
-	}
-	while (l)
-	{
-		l /= 17;
-		x++;
 	}
 	return (x);
 }
@@ -140,30 +186,12 @@ int	ft_putstr_fd(char *s, int fd)
 	return (i);
 }
 
-int	ft_putnbr_fd(long long n, int fd)
+int	ft_putnbr_fd(int n, int fd)
 {
-	long long    num;
-	int     x;
+	char	*s;
 	
-	x = 0;
-	num = n;
-	if (num < 0)
-	{
-			num *= -1;
-			x += write (fd, "-", 1);
-	}
-	else if (num < 10)
-	{
-		num += '0';
-		x += write (fd, &num, 1);
-		return (x);
-	}
-	else if(num >= 10)
-	{
-		x += ft_putnbr_fd(num / 10, fd);
-		ft_putnbr_fd(num % 10, fd);
-	}
-	return (x);
+	s = ft_itoa(n);
+	return (ft_putstr_fd(s, fd));
 }
 
 int	ft_puthex(unsigned int num, int fd, int j)
@@ -939,6 +967,24 @@ int main(void)
 		ft_printf("\n");
 
 	nbr_neg = -99999999;
+	output_OG = printf("OG -> %d\n", nbr_neg);
+	output_FT = ft_printf("FT -> %d\n", nbr_neg);
+	printf("OUTPUT OG = %d\n", output_OG);
+	ft_printf("OUTPUT FT = %d\n", output_FT);
+
+		nbr_neg = 99999999;
+	output_OG = printf("OG -> %d\n", nbr_neg);
+	output_FT = ft_printf("FT -> %d\n", nbr_neg);
+	printf("OUTPUT OG = %d\n", output_OG);
+	ft_printf("OUTPUT FT = %d\n", output_FT);
+
+		nbr_neg = -9999;
+	output_OG = printf("OG -> %d\n", nbr_neg);
+	output_FT = ft_printf("FT -> %d\n", nbr_neg);
+	printf("OUTPUT OG = %d\n", output_OG);
+	ft_printf("OUTPUT FT = %d\n", output_FT);
+
+		nbr_neg = 9999;
 	output_OG = printf("OG -> %d\n", nbr_neg);
 	output_FT = ft_printf("FT -> %d\n", nbr_neg);
 	printf("OUTPUT OG = %d\n", output_OG);
