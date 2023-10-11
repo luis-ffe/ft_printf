@@ -209,8 +209,11 @@ int	ft_printf(const char *input, ...)
 	{
 		if (*input == '%')
 		{
-			input++;
-			i += ft_typefinder(*input, list);
+			while (*input == '%')
+			{
+				input++;
+				i += ft_typefinder(*input, list);
+			}
 		}
 		else
 
