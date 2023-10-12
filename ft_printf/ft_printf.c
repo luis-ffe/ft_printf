@@ -6,7 +6,7 @@
 /*   By: luis-ffe <luis-ffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 08:38:33 by luis-ffe          #+#    #+#             */
-/*   Updated: 2023/10/11 20:54:39 by luis-ffe         ###   ########.fr       */
+/*   Updated: 2023/10/12 07:08:48 by luis-ffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <limits.h>
+
 
 /* HEADER EXPLANATION
 #include "/nfs/homes/luis-ffe/libft/libft.h"
@@ -28,60 +29,20 @@ using #include "/nfs/homes/luis-ffe/libft/libft.h"
 cc ft_printf.c -L/nfs/homes/luis-ffe/libft -lft -Wall -Werror -Wextra"
 */
 
-/* PUT HEX TRY
-int	ft_puthexup(unsigned int nbr)
-{
-	int nchar;
-	int i;
-	char *buff;
-	
-	nchar = 0;
-	i = nbr;
-	while(i)
-	{
-  		nchar++;
-		i = i / 10;
-	}
-	buff = malloc(nchar + 1);
-	if(!buff)
-		return (0);
-	i = nchar;
-	while(nbr || i)
-	{
-		buff[i--] = "0123456ABCDEF"[nbr % 16];
-		nbr = nbr / 16;
-	}
-	ft_putstr_fd(buff, 1);
-	free(buff);
-	return (nchar);
-}
+/*itoa function helpers and main f */
 
-int	ft_puthex(unsigned int nbr)
+int	ft_num_len(unsigned	int num)
 {
-	int nchar;
-	int i;
-	char *buff;
-	nchar = 0;
-	i = nbr;
-	while(i)
+	int	len;
+
+	len = 0;
+	while (num != 0)
 	{
-  		nchar++;
-		i = i / 10;
+		len++;
+		num = num / 10;
 	}
-	buff = malloc(nchar + 1);
-	if(!buff)
-		return(0);
-	i = nchar;
-	while(nbr || i)
-	{
-		buff[i--] = "0123456abcdef"[nbr % 16];
-		nbr = nbr / 16;
-	}
-	ft_putstr_fd(buff, 1);
-	free(buff);
-	return (nchar);
+	return (len);
 }
-*/
 
 static long int	countnbr(int c)
 {
@@ -131,9 +92,6 @@ char	*ft_itoa(int n)
 	s = set_nbr_str(aux, s, size);
 	return (s);
 }
-
-
-//use atoi??
 
 int	ft_putptr(unsigned long long num, int fd)
 {
@@ -194,6 +152,33 @@ int	ft_putnbr_fd(int n, int fd)
 	return (ft_putstr_fd(s, fd));
 }
 
+char	*ft_uitoa(unsigned int n)
+{
+	char	*num;
+	int		len;
+
+	len = ft_num_len(n);
+	num = (char *)malloc(sizeof(char) * (len + 1));
+	if (!num)
+		return (0);
+	num[len] = '\0';
+	while (n != 0)
+	{
+		num[len - 1] = n % 10 + 48;
+		n = n / 10;
+		len--;
+	}
+	return (num);
+}
+
+int	ft_putunsignd_fd(unsigned int n, int fd)
+{
+	char	*s;
+	
+	s = ft_uitoa(n);
+	return (ft_putstr_fd(s, fd));
+}
+
 int	ft_puthex(unsigned int num, int fd, int j)
 {
 	int     x;
@@ -232,7 +217,7 @@ int	ft_typefinder(int type, va_list lst)
 	else if('d' == type || 'i' == type)
 		return (ft_putnbr_fd(va_arg(lst, int), 1));
 	else if('u' == type)
-		return (ft_putnbr_fd(va_arg(lst, unsigned int), 1));
+		return (ft_putunsignd_fd(va_arg(lst, unsigned int), 1));
 	else if('x' == type)
 		return (ft_puthex(va_arg(lst, unsigned int), 1, 1));
 	else if('X' == type)
