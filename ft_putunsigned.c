@@ -1,36 +1,48 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_putunsigned.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: luis-ffe <luis-ffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/10 20:04:02 by luis-ffe          #+#    #+#             */
-/*   Updated: 2023/10/10 20:29:28 by luis-ffe         ###   ########.fr       */
+/*   Created: 2023/10/12 09:25:05 by luis-ffe          #+#    #+#             */
+/*   Updated: 2023/10/12 12:28:40 by luis-ffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_printf(const char *input, ...)
+char	*ft_uitoa(unsigned int n)
 {
-	int		i;
-	va_list list;
+	char	*num;
+	int		len;
 
-	va_start(list, input);
-	i = 0;
-	while(*input)
+	len = ft_num_len(n);
+	num = (char *)malloc(sizeof(char) * (len + 1));
+	if (!num)
 	{
-		if (*input == '%')
-		{
-			input++;
-			i += ft_typefinder(*input, list);
-		}
-		else
-
-			i += ft_putchar_fd(*input, 1);
-		input++;
+		free(num);
+		return (0);
 	}
-	va_end(list);
-	return (i);
+	if (n == 0)
+		num[0] = '0';
+	num[len] = '\0';
+	while (n)
+	{
+		num[--len] = n % 10 + 48;
+		n = n / 10;
+	}
+	return (num);
+}
+
+int	ft_putunsignd_fd(unsigned int n, int fd)
+{
+	char	*s;
+	int		x;
+
+	x = 0;
+	s = ft_uitoa(n);
+	x = ft_putstr_fd(s, fd);
+	free(s);
+	return (x);
 }
