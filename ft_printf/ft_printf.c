@@ -6,7 +6,7 @@
 /*   By: luis-ffe <luis-ffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 08:38:33 by luis-ffe          #+#    #+#             */
-/*   Updated: 2023/10/12 07:17:51 by luis-ffe         ###   ########.fr       */
+/*   Updated: 2023/10/12 07:32:13 by luis-ffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <limits.h>
-
-
-/* HEADER EXPLANATION
-#include "/nfs/homes/luis-ffe/libft/libft.h"
-
-path to the header or the header itself but using only the header we need to include it in the terminal
-
-using #include "libft.h"
-cc ft_printf.c -I/nfs/homes/luis-ffe/libft -L/nfs/homes/luis-ffe/libft -lft -Wall -Werror -Wextra
-
-using #include "/nfs/homes/luis-ffe/libft/libft.h"
-cc ft_printf.c -L/nfs/homes/luis-ffe/libft -lft -Wall -Werror -Wextra"
-*/
-
-/*itoa function helpers and main f */
 
 int	ft_num_len(unsigned	int num)
 {
@@ -100,6 +85,8 @@ int	ft_putptr(unsigned long long num, int fd)
 
 	x = 0;
 	l = num;
+	if (num == 0)
+		return(write(fd, "0", 1));
 	if (num < 16)
 	{
 		return(write(fd, &"0123456789abcdef"[num], 1));
@@ -119,14 +106,12 @@ int	ft_putptr0x(unsigned long long num, int fd)
 	i = 0;
 	if (!num)
 		return(write(fd, "(nil)", 5));
-	if(num == 0)
-		return(write(fd, "0", 1));
 	else
 	{
 		write(fd, "0", 1);
 		write(fd, "x", 1);
 	}
-	return(ft_putptr(num, fd) + 2);
+	return((num == 0) ? ((ft_putptr(num, fd) + 2) || (ft_putptr(num, fd) + 1)));
 }
 
 int	ft_putchar_fd(char c, int fd)
@@ -188,7 +173,7 @@ int	ft_puthex(unsigned int num, int fd, int j)
 
 	x = 0;
 	n = num;
-	if (num < 17)
+	if (num < 16)
 	{
 		if(j == 1)
 			write(fd, &"0123456789abcdef"[num], 1);
@@ -202,7 +187,7 @@ int	ft_puthex(unsigned int num, int fd, int j)
 	}
 	while(n)
 	{
-		n /= 10;
+		n /= 16;
 		x++;
 	}
 	return (x);
@@ -255,54 +240,6 @@ int	ft_printf(const char *input, ...)
 	va_end(list);
 	return (i);
 }
-
-/*
-int	main(void)
-{
-	   printf("oi                  ok\n");
-	ft_printf("oi                  ok\n");
-	   printf("1                   ok\n");
-	ft_printf("1                   ok\n");
-	  printf("i%s              ok\n", "mamao");
-   ft_printf("i%s              ok\n", "mamao");
-	  printf("1%c                  ok\n", 'a');
-   ft_printf("1%c                  ok\n", 'a');
-    ft_printf("% %%c                                                       ok\n", 'a');
-	printf("% %%c                                                   not\n", 'a');
-	ft_printf("%%%%%%%%%c            ok\n", 'a');
-	   printf("%%%%%%%%%c            ok\n", 'a');
-	      printf("%i                  ok\n", 10);
-	ft_printf("%i                  ok\n", 10);
-
-	printf("%i - or \n", printf("2 \n"));
-	ft_printf("%i - eu \n", ft_printf("2 \n"));
-
-	printf("%i\n", printf("%d %d                  ok\n", 55555, 23456));
-	ft_printf("%i\n", printf("%d %d                  ok\n", 55555, 23456));
-
-	int	x;
-	int	j;
-	char	*s1;
-	
-	s1 = "Cao e gato";
-	x = ft_printf("existem: %d %x %X %d %c %s\n", 55555, 23, 45678, 23456, 'c', s1);
-	j = printf("existem: %d %x %X %d %c %s\n", 55555, 23, 45678, 23456, 'c', s1);
-	printf("ft %d\nor %d", x, j);
-
-	printf("\n%p\n", &x);
-	ft_printf("%p\n", &x);
-
-
-
-
-
-	
-	return 1;
-}
-*/
-
-
-//MAIN TESTE LAZARO
 
 int main(void)
 {
