@@ -6,7 +6,7 @@
 /*   By: luis-ffe <luis-ffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 08:38:33 by luis-ffe          #+#    #+#             */
-/*   Updated: 2023/10/12 07:08:48 by luis-ffe         ###   ########.fr       */
+/*   Updated: 2023/10/12 07:17:51 by luis-ffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int	ft_putptr(unsigned long long num, int fd)
 	else
 	{
 		x += ft_putptr(num / 16, fd);
-		ft_putptr(num % 16, fd);
+		x += ft_putptr(num % 16, fd);
 	}
 	return (x);
 }
@@ -119,6 +119,8 @@ int	ft_putptr0x(unsigned long long num, int fd)
 	i = 0;
 	if (!num)
 		return(write(fd, "(nil)", 5));
+	if(num == 0)
+		return(write(fd, "0", 1));
 	else
 	{
 		write(fd, "0", 1);
