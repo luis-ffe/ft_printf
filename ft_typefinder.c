@@ -28,7 +28,7 @@ int	ft_typefinder(int type, va_list lst)
 		return (ft_puthex(va_arg(lst, unsigned int), 1, 1));
 	else if ('X' == type)
 		return (ft_puthex(va_arg(lst, unsigned int), 1, 42));
-	else if ('%' == type) 
+	else if ('%' == type)
 		return (ft_putchar_fd(type, 1));
 	return (0);
 }
