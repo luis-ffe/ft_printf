@@ -15,7 +15,7 @@ You will mainly learn about using a variable number of arguments. How cool is th
 • %u Prints an unsigned decimal (base 10) number. \
 • %x Prints a number in hexadecimal (base 16) lowercase format. \
 • %X Prints a number in hexadecimal (base 16) uppercase format. \
-• %% Prints a percent sign. \
+• %% Prints a percent sign.
 
 ## Tips
 Try not to overdo it like i did, itoa and atoi arent needed at all and neither are the Mallocs and frees. Just try using write and avoid memory allocation.
